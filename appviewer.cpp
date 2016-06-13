@@ -40,6 +40,8 @@ void AppViewer::enableEditingPanel(bool arg){
 	ui.lineEditWorker->setEnabled(arg);
 
 	ui.pushButtonAddStuff->setEnabled(arg);
+	ui.pushButtonBrowse->setEnabled(arg);
+	ui.pushButtonSaveName->setEnabled(arg);
 
 
 	//ui.gridLayoutEdit->setEnabled(arg);
@@ -48,19 +50,40 @@ void AppViewer::enableEditingPanel(bool arg){
 //Ustawienie nazwy obiektu
 void AppViewer::on_pushButtonSaveName_clicked(){
 
+	//Verifying data, returning if not ok
 	QString newName = getLine(ui.lineEditName);
+	if (newName.isEmpty()) return;
+
+	//Clinic case
 	if (editingC){
+		//When new Clinic is made
+		//Adding new clinic to model
 		model.getClinic().setName(newName.toStdString());
+		model.addObject(model.getClinic());
+		
+		//Adding new clinic to listwidget
+		new QListWidgetItem(QString::fromStdString(model.getClinic().getName()), ui.listWidget);
+
+		ui.textBrowserMyDebug->setText("Rozmiar listy " + QString::fromStdString(to_string(model.list.size())));
+		ui.textBrowserInfo->setText(QString::fromStdString(model.list.end()->infoToStr()));
+
+		//Disabling edition
+		enableEditingPanel(false);
+		editingC = false;
+
+
+
+		//else if (editingBS){
+		//	model.getBeauty().setName(newName.toStdString());
+		//}
+		//else if (editingNAS){
+		//	model.getNails().setName(newName.toStdString());
+		//}
+		
 	}
-	//else if (editingBS){
-	//	model.getBeauty().setName(newName.toStdString());
+	//else{
+	//	QMessageBox::critical(this, "Error", "Nie edytujesz ¿adnego obiektu");
 	//}
-	//else if (editingNAS){
-	//	model.getNails().setName(newName.toStdString());
-	//}
-	else{
-		QMessageBox::critical(this, "Error", "Nie edytujesz ¿adnego obiektu");
-	}
 }
 
 //Left panel adding stuff to HCU's
@@ -72,6 +95,31 @@ void AppViewer::on_pushButtonAddStuff_clicked(){
 //za³adowanie obrazu
 void AppViewer::on_pushButtonBrowse_clicked(){
 
+}
+
+//Right panel - list widget representing myLIst of HCU*
+void AppViewer::on_listWidget_currentItemChanged(){
+
+	//ui.textBrowserInfo->setText("Wybrano " + QString::fromStdString(to_string(ui.listWidget->currentRow())) + " pozycje na liscie\n"
+	//	+ "Lista ma " + QString::fromStdString(to_string(model.list.size())) + " pozycji\n");
+
+	QMessageBox::critical(this, "Error", QString::fromStdString(model.list.at(0)->infoToStr()));
+
+	//ui.textBrowserMyDebug->setText(QString::fromStdString(model.getList().at(0)->infoToStr()));
+	//QMessageBox::critical(this, "Error", "DUPA2");
+	//for (int i = 0; i < model.list.size(); i++){
+	//	ui.textBrowserMyDebug->setText(QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
+	//	QMessageBox::critical(this, "Error", QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
+	//}
+
+
+	//cout << model.list.at(ui.listWidget->currentRow())->infoToStr() << endl;
+	//	ui.textBrowserMyDebug->setText( "Dane obiektu z pozycji: " + QString::fromStdString(to_string(ui.listWidget->currentRow()))
+	//		+ "\n" + QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
+
+	//	ui.textBrowserMyDebug->setText(QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
+	//	model.getHCU() = model.getObject(ui.listWidget->currentRow());
+	//	ui.textBrowserMyDebug->setText("Rozmiar listy: "QString::fromStdString(model.getObject(ui.listWidget->currentRow()).infoToStr()));
 }
 
 //
@@ -116,70 +164,25 @@ void AppViewer::on_pushButtonBrowse_clicked(){
 //right panel buttons//Right panel buttons
 void AppViewer::on_pushButtonAddClinic_clicked(){
 	editingC = true;
-	//	ui.textBrowserInfo->setText(QString::fromStdString(randomC()));
-	Clinic c;
-
+	enableEditingPanel(true);
 }
 void AppViewer::on_pushButtonAddNails_clicked(){
 	editingNAS = true;
-//	ui.textBrowserInfo->setText(QString::fromStdString(randomNAS()));
+	enableEditingPanel(true);
 }
 void AppViewer::on_pushButtonAddBeauty_clicked(){
 	editingBS = true;
-//	ui.textBrowserInfo->setText(QString::fromStdString(randomBS()));
-
+	enableEditingPanel(true);
 }
 void AppViewer::on_pushButtonDelete_clicked(){
 	ui.textBrowserInfo->setText("Wciœniêto Usuñ");
 
 }
-//Right panel - list widget representing myLIst of HCU*
-void AppViewer::on_listWidget_currentItemChanged(){
-
-	ui.textBrowserInfo->setText("Wybrano " + QString::fromStdString(to_string(ui.listWidget->currentRow())) + " pozycje na liscie\n"
-		+ "Lista ma " + QString::fromStdString(to_string(model.list.size())) + " pozycji\n");
-
-	QMessageBox::critical(this, "Error", QString::fromStdString(model.getList().at(0)->infoToStr()));
-
-	ui.textBrowserMyDebug->setText(QString::fromStdString(model.getList().at(0)->infoToStr()));
-	QMessageBox::critical(this, "Error", "DUPA2");
-	//for (int i = 0; i < model.list.size(); i++){
-	//	ui.textBrowserMyDebug->setText(QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
-	//	QMessageBox::critical(this, "Error", QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
-	//}
-
-
-	//cout << model.list.at(ui.listWidget->currentRow())->infoToStr() << endl;
-	//	ui.textBrowserMyDebug->setText( "Dane obiektu z pozycji: " + QString::fromStdString(to_string(ui.listWidget->currentRow()))
-	//		+ "\n" + QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
-
-	//	ui.textBrowserMyDebug->setText(QString::fromStdString(model.list.at(ui.listWidget->currentRow())->infoToStr()));
-	//	model.getHCU() = model.getObject(ui.listWidget->currentRow());
-	//	ui.textBrowserMyDebug->setText("Rozmiar listy: "QString::fromStdString(model.getObject(ui.listWidget->currentRow()).infoToStr()));
-}
 
 
 
 
 
-/*
-void AppViewer::on_pushButtonAddPatient_clicked(){
-
-ui.textBrowserInfo->setText(getLine((ui.lineEditPatient)));
-}
-void AppViewer::on_pushButtonAddEquipement_clicked(){
-ui.textBrowserInfo->setText(getLine((ui.lineEditEquipment)));
-}
-void AppViewer::on_pushButtonAddPrice_clicked(){
-ui.textBrowserInfo->setText(getLine((ui.lineEditPrice)));
-}
-void AppViewer::on_pushButtonAddService_clicked(){
-ui.textBrowserInfo->setText(getLine((ui.lineEditService)));
-}
-void AppViewer::on_pushButtonAddWorker_clicked(){
-ui.textBrowserInfo->setText(getLine((ui.lineEditWorker)));
-}
-*/
 //Error MssgBoxes and stuff
 void AppViewer::tryLineEdit(QLineEdit *qle){
 	if (qle->text().isEmpty())

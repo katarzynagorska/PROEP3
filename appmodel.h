@@ -31,7 +31,7 @@ public:
 	BeautyStudio& getBeauty();// {return this->beauty; }
 	NailArtSaloon& getNails();// {return this->nails; }
 	HealthCareUnit& getHCU(){ return *hcu; }
-	myList<HealthCareUnit*> getList() { return this->list; }
+
 	myList<HealthCareUnit*> list;
 private:
 
