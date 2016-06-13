@@ -2,6 +2,7 @@
 #include <qmessagebox.h>
 #include "mylist.h"
 #include "clinic.h"
+#include<qfiledialog.h>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 	newObjectCreated = false;
 
 	enableEditingPanel(false);
+	ui.lineEditImage->setDisabled(true);
 
 }
 
@@ -42,7 +44,7 @@ void AppViewer::enableSavingName(bool arg){
 }
 
 void AppViewer::enableAddingStuff(bool arg){
-	ui.lineEditImage->setEnabled(arg);
+//	ui.lineEditImage->setEnabled(arg);
 	ui.lineEditEquipment->setEnabled(arg);
 	
 	ui.lineEditPatient->setEnabled(arg);
@@ -117,14 +119,48 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 }
 
 //Left panel adding stuff to HCU's
+//TODO finish that
 void AppViewer::on_pushButtonAddStuff_clicked(){
+	string type = model.hcu->classType();
 
+	QString equipment = ui.lineEditEquipment->text();
+	QString patient = ui.lineEditPatient->text();
+	QString filepath = ui.lineEditImage->text();
+	QString service = ui.lineEditService->text();
+	QString price = ui.lineEditPrice->text();
+	QString worker = ui.lineEditWorker->text();
+
+	if (type == "clinic")
+	{
+		if (equipment.isEmpty() && patient.isEmpty())
+		{
+			QMessageBox::critical(this, "Error", "Wprowadz dane");
+			return;
+		}
+	}
+	if (type == "nails")
+	{
+
+	}
+	if (type == "beauty")
+	{
+
+	}
+
+	if (!equipment.isEmpty())
+	{
+		model.hcu->addEquipment(equipment.toStdString());
+		ui.lineEditEquipment->setText("");
+	}
+
+	enableEditingPanel(false);
+	ui.textBrowserInfo->setText(QString::fromStdString(model.hcu->infoToStr()));
 }
 
-//TODO okno ³adowania pliku;
-//za³adowanie obrazu
+//Getting image filepath
 void AppViewer::on_pushButtonBrowse_clicked(){
-
+	QString imagePath = QFileDialog::getOpenFileName(this, "Open File", "", "JPEG (*.jpg *.jpeg);;PNG (*.png)");
+	ui.lineEditImage->setText(imagePath);
 }
 
 //Right panel - list widget representing myLIst of HCU*
@@ -142,18 +178,23 @@ void AppViewer::on_listWidget_currentItemChanged(){
 	{
 		editingC = true;
 		model.clinic = (Clinic&)*model.list.at(ui.listWidget->currentRow());
+		ui.lineEditPrice->setDisabled(true);
+		ui.lineEditService->setDisabled(true);
+		ui.lineEditWorker->setDisabled(true);
 	}
 
 	if (type == "nails")
 	{
 		editingNAS = true;
 		model.nails = (NailArtSaloon&)*model.list.at(ui.listWidget->currentRow());
+		ui.lineEditPatient->setDisabled(true);
 	}
 
 	if (type == "beauty")
 	{
 		editingBS = true;
 		model.beauty = (BeautyStudio&)*model.list.at(ui.listWidget->currentRow());
+		ui.lineEditPatient->setDisabled(true);
 	}
 }
 

@@ -13,6 +13,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <qimage.h>
 
 using namespace std;
 
@@ -39,10 +40,10 @@ public:
 
 	string getName(){ return name; };
 
-
+	QImage getImage(){ return image; }
 
 protected:
-
+	QImage image;
 	string name;				///<Name
 	vector <string>equipment;	///<List of equipment
 };
