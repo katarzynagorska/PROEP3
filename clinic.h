@@ -28,6 +28,7 @@ public:
 
 	string patientsToStr();
 	string infoToStr();
+	string classType(){ return "clinic"; }
 
 	void addPatient(string patient);
 

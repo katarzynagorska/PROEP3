@@ -43,6 +43,7 @@ private:
 	AppModel model;
 
 	bool editingC, editingBS, editingNAS;
+	bool newObjectCreated;
 };
 
 #endif // AppViewer_H

@@ -25,6 +25,7 @@ public:
 	virtual ~NailArtSaloon();
 
 	string infoToStr();
+	string classType() { return "nails"; }
 	string servicesToStr();
 	void addService(string service, int price);
 

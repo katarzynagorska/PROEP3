@@ -24,7 +24,7 @@ public:
 
 	///Method returning HCU info to string
 	virtual string infoToStr();
-
+	virtual string classType(){ return "beauty"; }
 
 	void addBeautician(string b);
 

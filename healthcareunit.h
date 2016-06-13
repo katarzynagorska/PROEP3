@@ -24,6 +24,7 @@ public:
 
 	virtual ~HealthCareUnit();
 
+	virtual string classType()=0;
 	virtual string infoToStr() = 0;
 
 	string equipToStr();

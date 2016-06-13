@@ -28,8 +28,8 @@ public:
 
 	T& operator[](int idx);
 	T& at(int idx);
-	T& end(){ return last->data; }
-	T& begin(){ return first->data; }
+	T& back(){ return last->data; }
+	T& front(){ return first->data; }
 	//Assignement operator, creates copy of the list
 	myList<T>& operator=(myList<T> &_list);
 	double nodeCreationTime(int idx);
