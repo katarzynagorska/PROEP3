@@ -22,6 +22,8 @@ public:
 	void lineIsNum(QString qstr);
 
 	void enableEditingPanel(bool arg);
+	void enableAddingStuff(bool arg);
+	void enableSavingName(bool arg);
 
 	private slots:
 	void on_pushButtonClose_clicked();

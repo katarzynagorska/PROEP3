@@ -5,6 +5,8 @@
 
 using namespace std;
 
+int selectedRow;
+
 AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -30,9 +32,19 @@ void AppViewer::on_pushButtonClose_clicked(){
 }
 
 void AppViewer::enableEditingPanel(bool arg){
+	enableAddingStuff(arg);
+	enableSavingName(arg);
+}
+
+void AppViewer::enableSavingName(bool arg){
+	ui.lineEditName->setEnabled(arg);
+	ui.pushButtonSaveName->setEnabled(arg);
+}
+
+void AppViewer::enableAddingStuff(bool arg){
 	ui.lineEditImage->setEnabled(arg);
 	ui.lineEditEquipment->setEnabled(arg);
-	ui.lineEditName->setEnabled(arg);
+	
 	ui.lineEditPatient->setEnabled(arg);
 	ui.lineEditPrice->setEnabled(arg);
 	ui.lineEditService->setEnabled(arg);
@@ -40,7 +52,6 @@ void AppViewer::enableEditingPanel(bool arg){
 
 	ui.pushButtonAddStuff->setEnabled(arg);
 	ui.pushButtonBrowse->setEnabled(arg);
-	ui.pushButtonSaveName->setEnabled(arg);
 }
 
 //left panel buttons - essential to saving new object
@@ -77,14 +88,26 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 			model.addObject(model.getNails());
 		}		
 	}
-	//When new object was created
+	
+	
+	QListWidgetItem *item = new QListWidgetItem; //, ui.listWidget);
+	QListWidgetItem *toremove = new QListWidgetItem;
+	item->setText(QString::fromStdString(model.list.back()->getName()));
+	
 	//Adding new hcu to listwidget
-	if (newObjectCreated)
-		new QListWidgetItem(QString::fromStdString(model.list.back()->getName()), ui.listWidget);
+	//When new object was created
+	if (newObjectCreated){
+		ui.listWidget->addItem(item);
+	}
 	else
 	{
-		;
+		//Inserting edited name to list
+		ui.listWidget->insertItem(selectedRow, item);
+		//Deleting preedited item from list
+		toremove = ui.listWidget->takeItem(selectedRow+1);
+		delete toremove;
 	}
+
 
 	//Disabling edition
 	enableEditingPanel(false);
@@ -107,47 +130,48 @@ void AppViewer::on_pushButtonBrowse_clicked(){
 //Right panel - list widget representing myLIst of HCU*
 void AppViewer::on_listWidget_currentItemChanged(){
 	newObjectCreated = false;
-	//Clinic case
+	enableEditingPanel(true);
+
+	selectedRow = ui.listWidget->currentRow();	
+	
 	model.hcu = model.list.at(ui.listWidget->currentRow());
+	ui.textBrowserInfo->setText(QString::fromStdString(model.hcu->infoToStr()));
+
 	string type = model.hcu->classType();
 	if (type == "clinic")
 	{
 		editingC = true;
 		model.clinic = (Clinic&)*model.list.at(ui.listWidget->currentRow());
-		QMessageBox::critical(this, "Error", "CLINIC");
 	}
 
 	if (type == "nails")
 	{
 		editingNAS = true;
 		model.nails = (NailArtSaloon&)*model.list.at(ui.listWidget->currentRow());
-		QMessageBox::critical(this, "Error", "NAILS");
 	}
 
 	if (type == "beauty")
 	{
 		editingBS = true;
 		model.beauty = (BeautyStudio&)*model.list.at(ui.listWidget->currentRow());
-		QMessageBox::critical(this, "Error", "BEAUTY");
 	}
-
 }
 
 //Right panel buttons
 void AppViewer::on_pushButtonAddClinic_clicked(){
 	editingC = true;
 	newObjectCreated = true;
-	enableEditingPanel(true);
+	enableSavingName(true);
 }
 void AppViewer::on_pushButtonAddNails_clicked(){
 	editingNAS = true;
 	newObjectCreated = true;
-	enableEditingPanel(true);
+	enableSavingName(true);
 }
 void AppViewer::on_pushButtonAddBeauty_clicked(){
 	editingBS = true;
 	newObjectCreated = true;
-	enableEditingPanel(true);
+	enableSavingName(true);
 }
 void AppViewer::on_pushButtonDelete_clicked(){
 	ui.textBrowserInfo->setText("Wciœniêto Usuñ");
