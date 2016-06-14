@@ -8,6 +8,18 @@ using namespace std;
 
 int selectedRow;
 
+void AppViewer::dupa(){
+	QString qstr;
+
+	for (int i = 0; i < model.list.size(); i++)
+	{
+		qstr += "\nnr na liscie " + QString::fromStdString(to_string(i)) + "\n\n";
+		qstr += QString::fromStdString(model.list.at(i)->getName());
+
+	}
+	ui.textBrowserInfo->setText(qstr);
+}
+
 AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -65,37 +77,52 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 	if (newName.isEmpty()) return;
 
 	if (editingC){
-		//Setting up name
-		model.getClinic().setName(newName.toStdString());
-		//Adding object to list only if it is newly created
-		if (newObjectCreated){		
-			model.addObject(model.getClinic());
+
+		if (newObjectCreated){
+			Clinic *newC = new Clinic();
+			model.getClinic().setName(newName.toStdString());
+			*newC = model.getClinic();
+			model.addObject(*newC);
+		}
+		else {
+			ui.textBrowserMyDebug->setText("ojojoj");
+			dupa();
+			model.list.at(selectedRow)->setName(newName.toStdString());
+
 		}
 
 	}
 	else if (editingBS){
-		//Setting up name
-		model.getBeauty().setName(newName.toStdString());
-		//Adding object to list only if it is newly created
-		if (newObjectCreated){		
-			model.addObject(model.getBeauty());
+		if (newObjectCreated){
+			BeautyStudio *newB = new BeautyStudio();
+			model.getBeauty().setName(newName.toStdString());
+			*newB = model.getBeauty();
+			model.addObject(*newB);
+		}
+		else {
+			model.list.at(selectedRow)->setName(newName.toStdString());
 		}
 	}
 
 	else if (editingNAS){
-		//Setting up name
-		model.getNails().setName(newName.toStdString());
-		//Adding object to list only if it is newly created
-		if (newObjectCreated){		
-			model.addObject(model.getNails());
-		}		
+		if (newObjectCreated){
+			NailArtSaloon *newN = new NailArtSaloon();
+			model.getNails().setName(newName.toStdString());
+			*newN = model.getNails();
+			model.addObject(*newN);
+		}
+		else {
+			model.list.at(selectedRow)->setName(newName.toStdString());
+		}
 	}
-	
-	
+	//TODO - change
+
+	refreshListWidget();
+	/*
 	QListWidgetItem *item = new QListWidgetItem; //, ui.listWidget);
 	QListWidgetItem *toremove = new QListWidgetItem;
 	item->setText(QString::fromStdString(model.list.back()->getName()));
-	
+
 	//Adding new hcu to listwidget
 	//When new object was created
 	if (newObjectCreated){
@@ -106,10 +133,10 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 		//Inserting edited name to list
 		ui.listWidget->insertItem(selectedRow, item);
 		//Deleting preedited item from list
-		toremove = ui.listWidget->takeItem(selectedRow+1);
+		toremove = ui.listWidget->takeItem(selectedRow + 1);
 		delete toremove;
 	}
-
+*/
 
 	//Disabling edition
 	enableEditingPanel(false);
@@ -203,23 +230,32 @@ void AppViewer::on_pushButtonAddClinic_clicked(){
 	editingC = true;
 	newObjectCreated = true;
 	enableSavingName(true);
+	enableAddingStuff(false);
 }
 void AppViewer::on_pushButtonAddNails_clicked(){
 	editingNAS = true;
 	newObjectCreated = true;
 	enableSavingName(true);
+	enableAddingStuff(false);
 }
 void AppViewer::on_pushButtonAddBeauty_clicked(){
 	editingBS = true;
 	newObjectCreated = true;
 	enableSavingName(true);
+	enableAddingStuff(false);
 }
 void AppViewer::on_pushButtonDelete_clicked(){
 	ui.textBrowserInfo->setText("Wciœniêto Usuñ");
 
 }
-
-
+//Not very effective
+void AppViewer::refreshListWidget(){
+	ui.listWidget->clear();
+	for (int i = 0; i < model.list.size(); i++)
+	{
+		ui.listWidget->addItem(QString::fromStdString(model.list.at(i)->getName()));
+	}
+}
 
 
 

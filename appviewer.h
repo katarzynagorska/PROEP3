@@ -24,6 +24,9 @@ public:
 	void enableEditingPanel(bool arg);
 	void enableAddingStuff(bool arg);
 	void enableSavingName(bool arg);
+	void dupa();
+	void refreshTextBrowser(HealthCareUnit &hcu);
+	void refreshListWidget();
 
 	private slots:
 	void on_pushButtonClose_clicked();

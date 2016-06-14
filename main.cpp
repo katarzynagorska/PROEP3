@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	AppViewer w;
 	w.setWindowTitle("Katarzyna Gorska");
-	w.setFixedSize(860, 660);
+	w.setFixedSize(860, 680);
 	w.show();
 	return a.exec();
 }
