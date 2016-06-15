@@ -20,8 +20,6 @@ AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 
 	enableEditingPanel(false);
 	ui.lineEditImage->setDisabled(true);
-
-
 }
 
 AppViewer::~AppViewer()
@@ -29,72 +27,140 @@ AppViewer::~AppViewer()
 	//	this->destroy;
 }
 
+//left panel buttons - essential to saving new object
+//Adding new HCU, setting up its name
+void AppViewer::on_pushButtonSaveName_clicked(){
+	
+	QString name = getLine(ui.lineEditName);
 
+	updateModelList(name);
+	updateListAfterAddingObject(name);
+
+	clearTextBrowserInfo();
+	enableEditingPanel(false);
+	clearEditingPanel();
+	setEditionFlags(false);
+}
+
+//Left panel adding stuff to HCU's
+//TODO finish that
+void AppViewer::on_pushButtonAddStuff_clicked(){
+
+	switch (getItemType(model.getHCU())){
+	case CLINIC:
+		updateEditedClinic();
+		break;
+
+	case BEAUTY:
+		updateEditedBeauty();
+		break;
+
+	case NAILS:
+		updateEditedNails();
+		break;
+
+	default:
+		return;
+	}
+
+	clearEditingPanel();
+	enableEditingPanel(false);
+	refreshTextBrowser(model.getHCU());
+	setEditionFlags(false);
+}
+
+//Getting image filepath
+void AppViewer::on_pushButtonBrowse_clicked(){
+	refreshImagePath();
+}
+
+//Right panel - list widget representing myLIst of HCU*
+//void AppViewer::on_listWidget_currentItemChanged(){}
+void AppViewer::on_listWidget_itemClicked(){	
+	getSelectedItemFromList();	
+	enableEditingFields(getItemType(model.getHCU()));
+	updateSelection(getItemType(model.getHCU()));
+}
+
+//Right panel buttons
+void AppViewer::on_pushButtonAddClinic_clicked(){
+	clearEditingPanel();
+	editingC = true;
+	newObjectCreated = true;
+	enableSavingName(true);
+	enableAddingStuff(false);
+}
+void AppViewer::on_pushButtonAddNails_clicked(){
+	clearEditingPanel();
+	editingNAS = true;
+	newObjectCreated = true;
+	enableSavingName(true);
+	enableAddingStuff(false);
+}
+void AppViewer::on_pushButtonAddBeauty_clicked(){
+	clearEditingPanel();
+	editingBS = true;
+	newObjectCreated = true;
+	enableSavingName(true);
+	enableAddingStuff(false);
+}
 void AppViewer::on_pushButtonClose_clicked(){
 	this->close();
 }
 
-void AppViewer::enableEditingPanel(bool arg){
-	enableAddingStuff(arg);
-	enableSavingName(arg);
+void AppViewer::on_pushButtonDelete_clicked(){
+	removeSelectedObjectFromListWidget();
+	removeSelectedObjectFromModel();
+	clearTextBrowserInfo();
 }
 
-void AppViewer::enableSavingName(bool arg){
-	ui.lineEditName->setEnabled(arg);
-	ui.pushButtonSaveName->setEnabled(arg);
+void AppViewer::removeSelectedObjectFromModel(){
+	model.list.erase(selectedRow);
+}
+void AppViewer::removeSelectedObjectFromListWidget(){
+	QListWidgetItem *toremove = new QListWidgetItem;
+	toremove = ui.listWidget->takeItem(selectedRow);
+	delete toremove;
 }
 
-void AppViewer::enableAddingStuff(bool arg){
-	ui.lineEditEquipment->setEnabled(arg);	
-	ui.lineEditPatient->setEnabled(arg);
-	ui.lineEditPrice->setEnabled(arg);
-	ui.lineEditService->setEnabled(arg);
-	ui.lineEditWorker->setEnabled(arg);
-
-	ui.pushButtonAddStuff->setEnabled(arg);
-	ui.pushButtonBrowse->setEnabled(arg);
-}
-
-//left panel buttons - essential to saving new object
-//Adding new HCU, setting up its name
-void AppViewer::on_pushButtonSaveName_clicked(){
-
+void AppViewer::updateModelList(QString newName){
 	//Verifying data, returning if not ok
-	QString newName = getLine(ui.lineEditName);
+	//QString newName = getLine(ui.lineEditName);
 	if (newName.isEmpty()) return;
 
-	if (editingC){
-
-		if (newObjectCreated){
-			model.addNewObject(newName.toStdString(), CLINIC);
-		}
-		else {
-			model.setObjectName(selectedRow, newName.toStdString());
-		}
-
+	//Adding new objects / editing existing
+	if (!newObjectCreated){
+		model.setObjectName(selectedRow, newName.toStdString());
+	}
+	else if (editingC){
+		model.addNewObject(newName.toStdString(), CLINIC);
 	}
 	else if (editingBS){
-		if (newObjectCreated){
-			model.addNewObject(newName.toStdString(), BEAUTY);
-		}
-		else {
-			model.setObjectName(selectedRow, newName.toStdString());
-		}
+		model.addNewObject(newName.toStdString(), BEAUTY);
+	}
+	else if (editingNAS){
+		model.addNewObject(newName.toStdString(), NAILS);
+	}
+}
+
+void AppViewer::updateListAfterAddingObject(QString newName){
+	QString objectType;
+
+	if (editingC){
+		objectType = "Przychodnia";
+	}
+	else if (editingBS){
+		objectType = "Salon Pieknosci";
+	}
+	else if (editingNAS){
+		objectType = "Studio paznokci";
 	}
 
-	else if (editingNAS){
-		if (newObjectCreated){
-			model.addNewObject(newName.toStdString(), NAILS);
-		}
-		else {
-			model.setObjectName(selectedRow, newName.toStdString());
-		}
-	}
 
 	//Refreshing ListWidget
-	QListWidgetItem *item = new QListWidgetItem; 
+	QListWidgetItem *item = new QListWidgetItem;
 	QListWidgetItem *toremove = new QListWidgetItem;
-	item->setText(newName);
+	item->setText(objectType + " : " + newName);
 	//Adding new hcu to listwidget
 	//When new object was created
 	if (newObjectCreated){
@@ -108,156 +174,192 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 		toremove = ui.listWidget->takeItem(selectedRow + 1);
 		delete toremove;
 	}
-
-	
-	//Disabling edition, clearing textbrowser
-	clearTextBrowserInfo();
-	enableEditingPanel(false);
-	editingC = false;
-	editingNAS = false;
-	editingBS = false;
 }
 
-//Left panel adding stuff to HCU's
-//TODO finish that
-void AppViewer::on_pushButtonAddStuff_clicked(){
-	string type = model.hcu->classType();
+void AppViewer::addEquipmentToSelectedObject(){
+	QString equipment = ui.lineEditEquipment->text();
+	if (!equipment.isEmpty()){		
+		model.getHCU().addEquipment(equipment.toStdString());
+	}
+}
 
+void AppViewer::setImageInSelectedObject(){
+	QString filepath = ui.lineEditImage->text();
+	if (!filepath.isEmpty()){
+		model.getHCU().setImage(filepath.toStdString());
+	}
+}
+
+void AppViewer::addPatientsToSelectedObject(){
+	QString patient = ui.lineEditPatient->text();
+	if (!patient.isEmpty()) {
+		((Clinic*)&model.getHCU())->addPatient(patient.toStdString());
+	}
+}
+
+void AppViewer::addWorkersToSelectedObject(){
+	QString worker = ui.lineEditWorker->text();
+	if (!worker.isEmpty())	{
+				((BeautyStudio*)&model.getHCU())->addBeautician(worker.toStdString());
+			}
+}
+
+void AppViewer::updateEditedClinic(){
+
+	if (updatePossible()){
+		addEquipmentToSelectedObject();
+		setImageInSelectedObject();
+		addPatientsToSelectedObject();
+	}
+
+}
+
+void AppViewer::updateEditedBeauty(){
+	if (updatePossible()){
+		addEquipmentToSelectedObject();
+		setImageInSelectedObject();
+		addWorkersToSelectedObject();
+		setPriceInSelectedBeauty();
+	}
+}
+
+void AppViewer::updateEditedNails(){
+	if (updatePossible()){
+		addEquipmentToSelectedObject();
+		setImageInSelectedObject();
+		addWorkersToSelectedObject();
+		addServiceToSelectedObject();
+	}
+}
+
+void AppViewer::setPriceInSelectedBeauty(){
+	QString price = ui.lineEditPrice->text();
+	if (!price.isEmpty()){
+		if (lineIsNum(price)){
+			((BeautyStudio*)&model.getHCU())->setPrice(price.toInt());
+		}
+		else{
+			QMessageBox::critical(this, "Error", "Wprowadz dane liczbowe w polu ceny");
+			return;
+		}
+	}
+}
+
+void AppViewer::addServiceToSelectedObject(){
+	QString service = ui.lineEditService->text();
+	QString price = ui.lineEditPrice->text();
+	int price_num;
+
+	if (price.isEmpty() && service.isEmpty())
+		return;
+
+	else if ((price.isEmpty()) ^ (service.isEmpty())){
+		QMessageBox::critical(this, "Error", "Wprowadz cene i nazwe uslugi");
+		return;
+	}
+
+	else if (lineIsNum(price)){
+		price_num = price.toInt();
+		((NailArtSaloon*)&model.getHCU())->addService(service.toStdString(), price_num);
+	}
+	else{
+		QMessageBox::critical(this, "Error", "Wprowadz dane liczbowe w polu ceny");
+		return;
+	}	
+}
+
+bool AppViewer::updatePossible(){
 	QString equipment = ui.lineEditEquipment->text();
 	QString patient = ui.lineEditPatient->text();
 	QString filepath = ui.lineEditImage->text();
 	QString service = ui.lineEditService->text();
 	QString price = ui.lineEditPrice->text();
 	QString worker = ui.lineEditWorker->text();
-
-	//General settings
+	
 	if (equipment.isEmpty() && patient.isEmpty() && filepath.isEmpty() && service.isEmpty() && price.isEmpty() && worker.isEmpty())
 	{
 		QMessageBox::critical(this, "Error", "Wprowadz dane");
-		return;
+		return false;
 	}
-	
-	if (!equipment.isEmpty())
-	{
-		model.getHCU().addEquipment(equipment.toStdString());
-	}
-
-	if (!filepath.isEmpty())
-	{
-		model.getHCU().setImage(filepath.toStdString());
-	}
-
-	//Specific settings depending on object type
-	if (type == "clinic")
-	{
-		if (!patient.isEmpty())
-		{
-			((Clinic*)&model.getHCU())->addPatient(patient.toStdString());
-		}
-
-	}
-	else if (type == "beauty")
-	{
-		if (!worker.isEmpty())
-		{
-			((BeautyStudio*)&model.getHCU())->addBeautician(worker.toStdString());
-		}
-		if (!price.isEmpty())
-		{
-			if (lineIsNum(price))
-			{
-				((BeautyStudio*)&model.getHCU())->setPrice(price.toInt());
-			}
-			else
-			{
-				QMessageBox::critical(this, "Error", "Wprowadz dane liczbowe w polu ceny");
-				return;
-			}
-
-		}
-	}
-	else if (type == "nails")
-	{
-		model.getNails() = (NailArtSaloon&)model.getHCU();
-
-	}
-
-
-
-	clearEditingPanel();
-	enableEditingPanel(false);
-	ui.textBrowserInfo->setText(QString::fromStdString(model.getHCU().infoToStr()));
+	else
+		return true;
 }
 
-//Getting image filepath
-void AppViewer::on_pushButtonBrowse_clicked(){
+void AppViewer::refreshImagePath(){
 	QString imagePath = QFileDialog::getOpenFileName(this, "Open File", "", "JPEG (*.jpg *.jpeg);;PNG (*.png)");
 	ui.lineEditImage->setText(imagePath);
 }
 
-//Right panel - list widget representing myLIst of HCU*
-//void AppViewer::on_listWidget_currentItemChanged(){}
-void AppViewer::on_listWidget_itemClicked(){
-	
+void AppViewer::refreshTextBrowser(HealthCareUnit &hcu){
+	ui.textBrowserInfo->setText(QString::fromStdString(hcu.infoToStr()));
+}
+
+void AppViewer::getSelectedItemFromList(){
 	newObjectCreated = false;
 	enableEditingPanel(true);
 
-	selectedRow = ui.listWidget->currentRow();	
-	
+	selectedRow = ui.listWidget->currentRow();
+
 	model.hcu = model.list.at(ui.listWidget->currentRow());
-	ui.textBrowserInfo->setText(QString::fromStdString(model.hcu->infoToStr()));
+	refreshTextBrowser(model.getHCU());
+}
 
-	string type = model.hcu->classType();
+HCUType AppViewer::getItemType(HealthCareUnit &hcu){
+	HCUType _type;
 
-	//Disabling different fields when editing different objects
-	if (type == "clinic")
-	{
-		editingC = true;
-		model.getClinic() = (Clinic&)*model.list.at(ui.listWidget->currentRow());
+	string type = hcu.classType();
+	if (type == "clinic") _type = CLINIC;
+	if (type == "nails") _type = NAILS;
+	if (type == "beauty") _type = BEAUTY;
+
+	return _type;
+}
+
+void AppViewer::enableEditingFields(HCUType type)
+{
+	switch (type){
+	case CLINIC:
 		ui.lineEditPrice->setDisabled(true);
 		ui.lineEditService->setDisabled(true);
 		ui.lineEditWorker->setDisabled(true);
-	}
+		break;
 
-	if (type == "nails")
-	{
-		editingNAS = true;
-		model.getNails() = (NailArtSaloon&)*model.list.at(ui.listWidget->currentRow());
-		ui.lineEditPatient->setDisabled(true);
-	}
-
-	if (type == "beauty")
-	{
-		editingBS = true;
-		model.getBeauty() = (BeautyStudio&)*model.list.at(ui.listWidget->currentRow());
+	case BEAUTY:
 		ui.lineEditPatient->setDisabled(true);
 		ui.lineEditService->setDisabled(true);
+		break;
+
+	case NAILS:
+		ui.lineEditPatient->setDisabled(true);
+		break;
+
+	default:
+		return;
 	}
 }
 
-//Right panel buttons
-void AppViewer::on_pushButtonAddClinic_clicked(){
-	editingC = true;
-	newObjectCreated = true;
-	enableSavingName(true);
-	enableAddingStuff(false);
-}
-void AppViewer::on_pushButtonAddNails_clicked(){
-	editingNAS = true;
-	newObjectCreated = true;
-	enableSavingName(true);
-	enableAddingStuff(false);
-}
-void AppViewer::on_pushButtonAddBeauty_clicked(){
-	editingBS = true;
-	newObjectCreated = true;
-	enableSavingName(true);
-	enableAddingStuff(false);
-}
-void AppViewer::on_pushButtonDelete_clicked(){
-	ui.textBrowserInfo->setText("Wciœniêto Usuñ");
+void AppViewer::updateSelection(HCUType type){
+	switch (type){
+	case CLINIC:
+		editingC = true;
+		model.getClinic() = (Clinic&)*model.list.at(ui.listWidget->currentRow());
+		break;
 
+	case BEAUTY:
+		editingBS = true;
+		model.getBeauty() = (BeautyStudio&)*model.list.at(ui.listWidget->currentRow());
+		break;
+
+	case NAILS:
+		editingNAS = true;
+		model.getNails() = (NailArtSaloon&)*model.list.at(ui.listWidget->currentRow());
+		break;
+
+	default:
+		return;
+	}
 }
+
 //Not very effective
 void AppViewer::refreshListWidget(){
 	ui.listWidget->clear();
@@ -309,4 +411,34 @@ QString AppViewer::getLine(QLineEdit *qle){
 	QString txt = qle->text();
 	qle->setText("");
 	return txt;
+}
+
+
+//Enabling all fields
+void AppViewer::enableEditingPanel(bool arg){
+	enableAddingStuff(arg);
+	enableSavingName(arg);
+}
+
+void AppViewer::enableSavingName(bool arg){
+	ui.lineEditName->setEnabled(arg);
+	ui.pushButtonSaveName->setEnabled(arg);
+}
+
+void AppViewer::enableAddingStuff(bool arg){
+	ui.lineEditEquipment->setEnabled(arg);
+	ui.lineEditPatient->setEnabled(arg);
+	ui.lineEditPrice->setEnabled(arg);
+	ui.lineEditService->setEnabled(arg);
+	ui.lineEditWorker->setEnabled(arg);
+
+	ui.pushButtonAddStuff->setEnabled(arg);
+	ui.pushButtonBrowse->setEnabled(arg);
+}
+
+//EditionFlagsSetUp
+void AppViewer::setEditionFlags(bool arg){
+	editingC = arg;
+	editingNAS = arg;
+	editingBS = arg;
 }

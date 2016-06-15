@@ -7,8 +7,8 @@
 
 enum HCUType{
 	CLINIC,
-	NAILS,
 	BEAUTY,
+	NAILS,
 };
 
 

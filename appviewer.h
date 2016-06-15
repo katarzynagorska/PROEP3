@@ -25,17 +25,51 @@ public:
 	void enableEditingPanel(bool arg);
 	void enableAddingStuff(bool arg);
 	void enableSavingName(bool arg);
+	//Enables only lineEdits for specific type of objects
+	void enableEditingFields(HCUType type);
 
 	//Information refreshing
 	void refreshTextBrowser(HealthCareUnit &hcu);
 	void refreshListWidget();
+	void refreshImagePath();
 
 	//Clearing browers and lineEdits
 	void clearTextBrowserInfo();
 	void clearEditingPanel();
 
-	//Slots
-	private slots:
+	//Functions to modify model and list widget
+	void getSelectedItemFromList();
+	HCUType getItemType(HealthCareUnit &hcu);
+	
+	//Objects edition
+	void updateModelList(QString newName);
+	void updateSelection(HCUType type);			//changes model.hcu to the one selected from list
+	void removeSelectedObjectFromModel();
+	//Adding stuff to objects
+	//General
+	void addEquipmentToSelectedObject();
+	void setImageInSelectedObject();
+	//Specific
+	void addPatientsToSelectedObject();
+	void addWorkersToSelectedObject();
+	void setPriceInSelectedBeauty();
+	void addServiceToSelectedObject();
+	//Objects update
+	void updateEditedClinic();
+	void updateEditedBeauty();
+	void updateEditedNails();
+	
+	//Checks anything is in lineEdits
+	bool updatePossible();
+
+	//ListWidget edition
+	void updateListAfterAddingObject(QString newName);
+	void removeSelectedObjectFromListWidget();
+	//Flags modification
+	void setEditionFlags(bool arg);
+
+//Slots
+private slots:
 	void on_pushButtonClose_clicked();
 	//left panel buttons
 	void on_pushButtonBrowse_clicked();
@@ -48,7 +82,6 @@ public:
 	void on_pushButtonAddBeauty_clicked();
 	void on_pushButtonDelete_clicked();
 	//listwidget
-	//void on_listWidget_currentItemChanged();
 	void on_listWidget_itemClicked();
 
 private:

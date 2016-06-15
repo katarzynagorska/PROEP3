@@ -15,8 +15,6 @@ NailArtSaloon::~NailArtSaloon()
 {
 }
 
-
-//TODO
 string NailArtSaloon::infoToStr(){
 	string s;
 	s = "----Studio paznokci----\n";
@@ -35,7 +33,7 @@ string NailArtSaloon::infoToStr(){
 
 	return s;
 }
-//TODO
+
 string NailArtSaloon::servicesToStr(){
 	string s;
 	stringstream ss;
@@ -83,16 +81,18 @@ void NailArtSaloon::removeService(string service)
 void NailArtSaloon::updateMeanPrice()
 {
 	price = 0;
-	map<string, int>::iterator it;
-	it = service.begin();
 
-	while (it != service.end())
-	{
-		price += it->second;
-		it++;
+	if (service.size() > 0){
+		map<string, int>::iterator it;
+		it = service.begin();
+
+		while (it != service.end()) {
+			price += it->second;
+			it++;
+		}
+
+		price /= service.size();
 	}
-
-	price /= service.size();
 }
 
 void NailArtSaloon::clear(){
