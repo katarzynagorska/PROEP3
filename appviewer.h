@@ -16,18 +16,25 @@ public:
 	AppViewer(QWidget *parent = 0);
 	~AppViewer();
 
-	//Methods handling line edits stuff
+	//Methods handling line edits etc
+	//Verification
 	QString getLine(QLineEdit *qle);
 	void tryLineEdit(QLineEdit *qle);
-	void lineIsNum(QString qstr);
-
+	bool lineIsNum(QString qstr);
+	//Availability of line edits
 	void enableEditingPanel(bool arg);
 	void enableAddingStuff(bool arg);
 	void enableSavingName(bool arg);
-	void dupa();
+
+	//Information refreshing
 	void refreshTextBrowser(HealthCareUnit &hcu);
 	void refreshListWidget();
 
+	//Clearing browers and lineEdits
+	void clearTextBrowserInfo();
+	void clearEditingPanel();
+
+	//Slots
 	private slots:
 	void on_pushButtonClose_clicked();
 	//left panel buttons
@@ -41,7 +48,7 @@ public:
 	void on_pushButtonAddBeauty_clicked();
 	void on_pushButtonDelete_clicked();
 	//listwidget
-	void on_listWidget_currentItemChanged();
+	//void on_listWidget_currentItemChanged();
 	void on_listWidget_itemClicked();
 
 private:

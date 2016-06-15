@@ -17,23 +17,29 @@ void AppModel::addNewObject(string name, HCUType type){
 	{
 	case CLINIC:
 		newC = new Clinic();
+		clinic.clear();
 		clinic.setName(name);
 		*newC = clinic;
 		addObject(*newC);
+		
 		break;
 	
 	case BEAUTY:
 		newB = new BeautyStudio();
+		beauty.clear();
 		beauty.setName(name);
 		*newB = beauty;
 		addObject(*newB);
+		
 		break;
 
 	case NAILS:
 		newN = new NailArtSaloon();
+		nails.clear();
 		nails.setName(name);
 		*newN = nails;
 		addObject(*newN);
+		
 		break;
 	
 	default:
@@ -45,6 +51,15 @@ void AppModel::addNewObject(string name, HCUType type){
 
 HealthCareUnit& AppModel::getObject(int i){
 	return *list[i];
+}
+HealthCareUnit& AppModel::findObject(string name){
+	
+	for (int i = 0; i < list.size(); i++)
+	{
+		if (list.at(i)->getName() == name)
+			return *list.at(i);
+	}
+	//TODO insert return statement here
 }
 
 void AppModel::setObjectName(int i, string name){

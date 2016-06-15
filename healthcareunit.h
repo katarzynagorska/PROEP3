@@ -27,6 +27,7 @@ public:
 
 	virtual string classType()=0;
 	virtual string infoToStr() = 0;
+	virtual void clear();
 
 	string equipToStr();
 
@@ -41,6 +42,7 @@ public:
 	string getName(){ return name; };
 
 	QImage getImage(){ return image; }
+	void setImage(string filepath);
 
 protected:
 	QImage image;

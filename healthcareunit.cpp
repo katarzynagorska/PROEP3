@@ -47,3 +47,10 @@ void HealthCareUnit::setName(string s)
 {
 	name = s;
 }
+void HealthCareUnit::setImage(string filepath){
+	//TODO setting image
+}
+
+void HealthCareUnit::clear(){
+	equipment.erase(equipment.begin(), equipment.end());
+}

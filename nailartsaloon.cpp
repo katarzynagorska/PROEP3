@@ -94,3 +94,9 @@ void NailArtSaloon::updateMeanPrice()
 
 	price /= service.size();
 }
+
+void NailArtSaloon::clear(){
+	BeautyStudio::clear();
+	service.erase(service.begin(), service.end());
+	updateMeanPrice();
+}

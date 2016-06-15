@@ -31,7 +31,7 @@ public:
 	string classType(){ return "clinic"; }
 
 	void addPatient(string patient);
-
+	void clear();
 
 private:
 	vector<string> patients; ///<patients list

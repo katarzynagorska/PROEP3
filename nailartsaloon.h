@@ -29,7 +29,7 @@ public:
 	string servicesToStr();
 	void addService(string service, int price);
 
-
+	void clear();
 	void removeService(string service);
 
 

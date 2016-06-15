@@ -45,3 +45,8 @@ string Clinic::infoToStr(){
 void Clinic::addPatient(string _patient){
 	patients.push_back(_patient);
 }
+
+void Clinic::clear(){
+	HealthCareUnit::clear();
+	patients.erase(patients.begin(), patients.end());
+}

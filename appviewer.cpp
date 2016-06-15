@@ -8,18 +8,6 @@ using namespace std;
 
 int selectedRow;
 
-void AppViewer::dupa(){
-	QString qstr;
-
-	for (int i = 0; i < model.list.size(); i++)
-	{
-		qstr += "\nnr na liscie " + QString::fromStdString(to_string(i)) + "\n\n";
-		qstr += QString::fromStdString(model.list.at(i)->getName());
-
-	}
-	ui.textBrowserInfo->setText(qstr);
-}
-
 AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
@@ -57,9 +45,7 @@ void AppViewer::enableSavingName(bool arg){
 }
 
 void AppViewer::enableAddingStuff(bool arg){
-//	ui.lineEditImage->setEnabled(arg);
-	ui.lineEditEquipment->setEnabled(arg);
-	
+	ui.lineEditEquipment->setEnabled(arg);	
 	ui.lineEditPatient->setEnabled(arg);
 	ui.lineEditPrice->setEnabled(arg);
 	ui.lineEditService->setEnabled(arg);
@@ -104,14 +90,11 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 			model.setObjectName(selectedRow, newName.toStdString());
 		}
 	}
-	//TODO - change
 
-	//refreshListWidget();
-	
-	QListWidgetItem *item = new QListWidgetItem; //, ui.listWidget);
+	//Refreshing ListWidget
+	QListWidgetItem *item = new QListWidgetItem; 
 	QListWidgetItem *toremove = new QListWidgetItem;
 	item->setText(newName);
-
 	//Adding new hcu to listwidget
 	//When new object was created
 	if (newObjectCreated){
@@ -126,8 +109,9 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 		delete toremove;
 	}
 
-
-	//Disabling edition
+	
+	//Disabling edition, clearing textbrowser
+	clearTextBrowserInfo();
 	enableEditingPanel(false);
 	editingC = false;
 	editingNAS = false;
@@ -146,31 +130,63 @@ void AppViewer::on_pushButtonAddStuff_clicked(){
 	QString price = ui.lineEditPrice->text();
 	QString worker = ui.lineEditWorker->text();
 
-	if (type == "clinic")
+	//General settings
+	if (equipment.isEmpty() && patient.isEmpty() && filepath.isEmpty() && service.isEmpty() && price.isEmpty() && worker.isEmpty())
 	{
-		if (equipment.isEmpty() && patient.isEmpty())
-		{
-			QMessageBox::critical(this, "Error", "Wprowadz dane");
-			return;
-		}
+		QMessageBox::critical(this, "Error", "Wprowadz dane");
+		return;
 	}
-	if (type == "nails")
-	{
-
-	}
-	if (type == "beauty")
-	{
-
-	}
-
+	
 	if (!equipment.isEmpty())
 	{
-		model.hcu->addEquipment(equipment.toStdString());
-		ui.lineEditEquipment->setText("");
+		model.getHCU().addEquipment(equipment.toStdString());
 	}
 
+	if (!filepath.isEmpty())
+	{
+		model.getHCU().setImage(filepath.toStdString());
+	}
+
+	//Specific settings depending on object type
+	if (type == "clinic")
+	{
+		if (!patient.isEmpty())
+		{
+			((Clinic*)&model.getHCU())->addPatient(patient.toStdString());
+		}
+
+	}
+	else if (type == "beauty")
+	{
+		if (!worker.isEmpty())
+		{
+			((BeautyStudio*)&model.getHCU())->addBeautician(worker.toStdString());
+		}
+		if (!price.isEmpty())
+		{
+			if (lineIsNum(price))
+			{
+				((BeautyStudio*)&model.getHCU())->setPrice(price.toInt());
+			}
+			else
+			{
+				QMessageBox::critical(this, "Error", "Wprowadz dane liczbowe w polu ceny");
+				return;
+			}
+
+		}
+	}
+	else if (type == "nails")
+	{
+		model.getNails() = (NailArtSaloon&)model.getHCU();
+
+	}
+
+
+
+	clearEditingPanel();
 	enableEditingPanel(false);
-	ui.textBrowserInfo->setText(QString::fromStdString(model.hcu->infoToStr()));
+	ui.textBrowserInfo->setText(QString::fromStdString(model.getHCU().infoToStr()));
 }
 
 //Getting image filepath
@@ -180,7 +196,7 @@ void AppViewer::on_pushButtonBrowse_clicked(){
 }
 
 //Right panel - list widget representing myLIst of HCU*
-void AppViewer::on_listWidget_currentItemChanged(){}
+//void AppViewer::on_listWidget_currentItemChanged(){}
 void AppViewer::on_listWidget_itemClicked(){
 	
 	newObjectCreated = false;
@@ -251,7 +267,19 @@ void AppViewer::refreshListWidget(){
 	}
 }
 
+void AppViewer::clearTextBrowserInfo(){
+	ui.textBrowserInfo->setText("");
+}
 
+void AppViewer::clearEditingPanel(){
+	ui.lineEditEquipment->setText("");
+	ui.lineEditPatient->setText("");
+	ui.lineEditPrice->setText("");
+	ui.lineEditService->setText("");
+	ui.lineEditWorker->setText("");
+	ui.lineEditImage->setText("");
+	ui.lineEditName->setText("");
+}
 
 //Error MssgBoxes and stuff
 void AppViewer::tryLineEdit(QLineEdit *qle){
@@ -259,11 +287,10 @@ void AppViewer::tryLineEdit(QLineEdit *qle){
 		throw new QString("Wprowadz poprawna wartosc " + qle->objectName());
 }
 
-void AppViewer::lineIsNum(QString qstr){
+bool AppViewer::lineIsNum(QString qstr){
 	bool ok;
 	int num = qstr.toInt(&ok, 10);
-	if (!ok)
-		throw new QString("Wprowadz poprawna wartosc liczbowa!");
+	return ok;
 }
 
 QString AppViewer::getLine(QLineEdit *qle){

@@ -14,8 +14,6 @@ BeautyStudio::~BeautyStudio()
 {
 }
 
-
-//TODO
 string BeautyStudio::infoToStr(){
 
 	string s;
@@ -29,11 +27,11 @@ string BeautyStudio::infoToStr(){
 
 	return s;
 }
-//TODO
+
 string BeautyStudio::beauticiansToStr(){
 	string s;
 	s = "Kosmetyczki pracujace w salonie:\n";
-	for (string &b : beautician)// (int i = 0; i < int(beautician.size()); i++)
+	for (string &b : beautician)
 		s += b + "\n";
 	return s;
 }
@@ -66,4 +64,10 @@ void BeautyStudio::setPrice(int price)
 void BeautyStudio::getPrice()
 {
 	cout << "Srednia cena ze uslugi: " << price << endl;
+}
+
+void BeautyStudio::clear(){
+	HealthCareUnit::clear();
+	setPrice(0);
+	beautician.erase(beautician.begin(), beautician.end());
 }

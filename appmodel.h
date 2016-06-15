@@ -24,6 +24,7 @@ public:
 	
 
 	HealthCareUnit& getObject(int i);
+	HealthCareUnit& findObject(string name);
 
 	void setObjectName(int i, string name);
 

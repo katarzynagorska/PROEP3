@@ -21,7 +21,7 @@ public:
 	BeautyStudio();
 	virtual ~BeautyStudio();
 
-
+	virtual void clear();
 	///Method returning HCU info to string
 	virtual string infoToStr();
 	virtual string classType(){ return "beauty"; }
