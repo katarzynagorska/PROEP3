@@ -33,6 +33,7 @@ AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 	enableEditingPanel(false);
 	ui.lineEditImage->setDisabled(true);
 
+
 }
 
 AppViewer::~AppViewer()
@@ -79,49 +80,37 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 	if (editingC){
 
 		if (newObjectCreated){
-			Clinic *newC = new Clinic();
-			model.getClinic().setName(newName.toStdString());
-			*newC = model.getClinic();
-			model.addObject(*newC);
+			model.addNewObject(newName.toStdString(), CLINIC);
 		}
 		else {
-			ui.textBrowserMyDebug->setText("ojojoj");
-			dupa();
-			model.list.at(selectedRow)->setName(newName.toStdString());
-
+			model.setObjectName(selectedRow, newName.toStdString());
 		}
 
 	}
 	else if (editingBS){
 		if (newObjectCreated){
-			BeautyStudio *newB = new BeautyStudio();
-			model.getBeauty().setName(newName.toStdString());
-			*newB = model.getBeauty();
-			model.addObject(*newB);
+			model.addNewObject(newName.toStdString(), BEAUTY);
 		}
 		else {
-			model.list.at(selectedRow)->setName(newName.toStdString());
+			model.setObjectName(selectedRow, newName.toStdString());
 		}
 	}
 
 	else if (editingNAS){
 		if (newObjectCreated){
-			NailArtSaloon *newN = new NailArtSaloon();
-			model.getNails().setName(newName.toStdString());
-			*newN = model.getNails();
-			model.addObject(*newN);
+			model.addNewObject(newName.toStdString(), NAILS);
 		}
 		else {
-			model.list.at(selectedRow)->setName(newName.toStdString());
+			model.setObjectName(selectedRow, newName.toStdString());
 		}
 	}
 	//TODO - change
 
-	refreshListWidget();
-	/*
+	//refreshListWidget();
+	
 	QListWidgetItem *item = new QListWidgetItem; //, ui.listWidget);
 	QListWidgetItem *toremove = new QListWidgetItem;
-	item->setText(QString::fromStdString(model.list.back()->getName()));
+	item->setText(newName);
 
 	//Adding new hcu to listwidget
 	//When new object was created
@@ -136,7 +125,7 @@ void AppViewer::on_pushButtonSaveName_clicked(){
 		toremove = ui.listWidget->takeItem(selectedRow + 1);
 		delete toremove;
 	}
-*/
+
 
 	//Disabling edition
 	enableEditingPanel(false);
@@ -191,7 +180,9 @@ void AppViewer::on_pushButtonBrowse_clicked(){
 }
 
 //Right panel - list widget representing myLIst of HCU*
-void AppViewer::on_listWidget_currentItemChanged(){
+void AppViewer::on_listWidget_currentItemChanged(){}
+void AppViewer::on_listWidget_itemClicked(){
+	
 	newObjectCreated = false;
 	enableEditingPanel(true);
 
@@ -201,10 +192,12 @@ void AppViewer::on_listWidget_currentItemChanged(){
 	ui.textBrowserInfo->setText(QString::fromStdString(model.hcu->infoToStr()));
 
 	string type = model.hcu->classType();
+
+	//Disabling different fields when editing different objects
 	if (type == "clinic")
 	{
 		editingC = true;
-		model.clinic = (Clinic&)*model.list.at(ui.listWidget->currentRow());
+		model.getClinic() = (Clinic&)*model.list.at(ui.listWidget->currentRow());
 		ui.lineEditPrice->setDisabled(true);
 		ui.lineEditService->setDisabled(true);
 		ui.lineEditWorker->setDisabled(true);
@@ -213,15 +206,16 @@ void AppViewer::on_listWidget_currentItemChanged(){
 	if (type == "nails")
 	{
 		editingNAS = true;
-		model.nails = (NailArtSaloon&)*model.list.at(ui.listWidget->currentRow());
+		model.getNails() = (NailArtSaloon&)*model.list.at(ui.listWidget->currentRow());
 		ui.lineEditPatient->setDisabled(true);
 	}
 
 	if (type == "beauty")
 	{
 		editingBS = true;
-		model.beauty = (BeautyStudio&)*model.list.at(ui.listWidget->currentRow());
+		model.getBeauty() = (BeautyStudio&)*model.list.at(ui.listWidget->currentRow());
 		ui.lineEditPatient->setDisabled(true);
+		ui.lineEditService->setDisabled(true);
 	}
 }
 

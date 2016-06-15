@@ -6,36 +6,49 @@ void AppModel::addObject(HealthCareUnit &h){
 	list.push_back(&h);
 }
 
+void AppModel::addNewObject(string name, HCUType type){
+	
+	//Initialization before switch statement, errors otherwise
+	Clinic *newC; 
+	BeautyStudio *newB;
+	NailArtSaloon *newN;
+
+	switch (type)
+	{
+	case CLINIC:
+		newC = new Clinic();
+		clinic.setName(name);
+		*newC = clinic;
+		addObject(*newC);
+		break;
+	
+	case BEAUTY:
+		newB = new BeautyStudio();
+		beauty.setName(name);
+		*newB = beauty;
+		addObject(*newB);
+		break;
+
+	case NAILS:
+		newN = new NailArtSaloon();
+		nails.setName(name);
+		*newN = nails;
+		addObject(*newN);
+		break;
+	
+	default:
+		return;
+	}
+
+	
+}
+
 HealthCareUnit& AppModel::getObject(int i){
 	return *list[i];
 }
 
-void AppModel::setname(int i, string name){
+void AppModel::setObjectName(int i, string name){
 	list[i]->setName(name);
-}
-
-///Returns true if name and address are set
-bool AppModel::clinicIsReady(){
-	bool not_ready = (clinic.getName() == "");
-	if (not_ready)
-		throw new QString("Wypelnij pola adresu i nazwy");
-	return !not_ready;
-}
-
-///Returns true if name and address are set
-bool AppModel::beautyIsReady(){
-	bool not_ready = (beauty.getName() == "");
-	if (not_ready)
-		throw new QString("Wypelnij pola adresu i nazwy");
-	return !not_ready;
-}
-
-///Returns true if name and address are set
-bool AppModel::nailsIsReady(){
-	bool not_ready = (nails.getName() == "");
-	if (not_ready)
-		throw new QString("Wypelnij pola adresu i nazwy");
-	return !not_ready;
 }
 
 //Getters

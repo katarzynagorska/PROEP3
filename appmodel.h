@@ -5,6 +5,13 @@
 #include "Clinic.h"
 #include "beautystudio.h"
 
+enum HCUType{
+	CLINIC,
+	NAILS,
+	BEAUTY,
+};
+
+
 class AppModel{
 
 public:
@@ -12,19 +19,13 @@ public:
 	~AppModel(){};
 
 	void addObject(HealthCareUnit &h);
+	
+	void addNewObject(string name, HCUType type);
+	
 
 	HealthCareUnit& getObject(int i);
 
-	void setname(int i, string name);
-
-	///Returns true if name and address are set
-	bool clinicIsReady();
-
-	///Returns true if name and address are set
-	bool beautyIsReady();
-
-	///Returns true if name and address are set
-	bool nailsIsReady();
+	void setObjectName(int i, string name);
 
 	//Getters
 	Clinic& getClinic();// {return this->clinic; }
@@ -33,16 +34,14 @@ public:
 	HealthCareUnit& getHCU(){ return *hcu; }
 
 	HealthCareUnit* hcu;
-	Clinic clinic;
-	BeautyStudio beauty;
-	NailArtSaloon nails;
+
 
 	myList<HealthCareUnit*> list;
 private:
 
 	
-	//Clinic clinic;
-	//BeautyStudio beauty;
-	//NailArtSaloon nails;
+	Clinic clinic;
+	BeautyStudio beauty;
+	NailArtSaloon nails;
 
 };

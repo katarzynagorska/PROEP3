@@ -42,6 +42,7 @@ public:
 	void on_pushButtonDelete_clicked();
 	//listwidget
 	void on_listWidget_currentItemChanged();
+	void on_listWidget_itemClicked();
 
 private:
 	Ui::AppViewerClass ui;
