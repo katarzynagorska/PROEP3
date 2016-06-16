@@ -1,3 +1,4 @@
+#include"demo.h"
 #include "appviewer.h"
 #include <qmessagebox.h>
 #include "mylist.h"
@@ -21,16 +22,7 @@ AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 	enableEditingPanel(false);
 	ui.lineEditImage->setDisabled(true);
 
-	QImage img("C:/Users/Katarzyna/Pictures/a.png");
-
-
-	
 	scene = new QGraphicsScene(this);
-//	QImage small = img.scaled(ui.graphicsView->size(), Qt::KeepAspectRatio);
-
-
-
-	//QGraphicsView view(scene);
 }
 
 AppViewer::~AppViewer()
@@ -100,27 +92,41 @@ void AppViewer::on_listWidget_itemClicked(){
 //Right panel buttons
 void AppViewer::on_pushButtonAddClinic_clicked(){
 	clearEditingPanel();
+	setEditionFlags(false);
 	editingC = true;
+
 	newObjectCreated = true;
 	enableSavingName(true);
 	enableAddingStuff(false);
 }
 void AppViewer::on_pushButtonAddNails_clicked(){
 	clearEditingPanel();
+	setEditionFlags(false);
 	editingNAS = true;
+
 	newObjectCreated = true;
 	enableSavingName(true);
 	enableAddingStuff(false);
 }
+
 void AppViewer::on_pushButtonAddBeauty_clicked(){
 	clearEditingPanel();
+	setEditionFlags(false);
 	editingBS = true;
+
 	newObjectCreated = true;
 	enableSavingName(true);
 	enableAddingStuff(false);
 }
 void AppViewer::on_pushButtonClose_clicked(){
 	this->close();
+}
+
+void AppViewer::on_pushButtonDemo_clicked(){
+	addDemo();
+	refreshListWidget();
+	ui.pushButtonDemo->setDisabled(true);
+	setEditionFlags(false);
 }
 
 void AppViewer::on_pushButtonDelete_clicked(){
@@ -166,7 +172,7 @@ void AppViewer::updateListAfterAddingObject(QString newName){
 		objectType = "Przychodnia";
 	}
 	else if (editingBS){
-		objectType = "Salon Pieknosci";
+		objectType = "Salon pieknosci";
 	}
 	else if (editingNAS){
 		objectType = "Studio paznokci";
@@ -209,7 +215,7 @@ void AppViewer::setImageInSelectedObject(){
 
 void AppViewer::displayImage(QImage img){
 	scene->clear();
-	QImage resized = img.scaled(ui.graphicsView->size(), Qt::KeepAspectRatio);
+	QImage resized = img.scaled(ui.graphicsView->size() *= 0.85, Qt::KeepAspectRatio);
 	scene->addPixmap(QPixmap::fromImage(resized));
 	scene->setSceneRect(resized.rect());
 	ui.graphicsView->setScene(scene);
@@ -326,6 +332,8 @@ void AppViewer::getSelectedItemFromList(){
 	selectedRow = ui.listWidget->currentRow();
 
 	model.hcu = model.list.at(ui.listWidget->currentRow());
+	//model.getHCU() = *model.list.at(ui.listWidget->currentRow());
+	//model.setHCU(*model.list.at(ui.listWidget->currentRow()));
 	refreshTextBrowser(model.getHCU());
 }
 
@@ -387,10 +395,17 @@ void AppViewer::updateSelection(HCUType type){
 
 //Not very effective
 void AppViewer::refreshListWidget(){
+	string type;
+	QString prfx;
 	ui.listWidget->clear();
 	for (int i = 0; i < model.list.size(); i++)
 	{
-		ui.listWidget->addItem(QString::fromStdString(model.list.at(i)->getName()));
+		type = model.list.at(i)->classType();
+		if (type == "clinic") prfx = "Przychodnia : ";
+		if (type == "beauty") prfx = "Salon pieknosci : ";
+		if (type == "nails") prfx = "Studio paznokci : ";
+		
+		ui.listWidget->addItem(prfx + QString::fromStdString(model.list.at(i)->getName()));
 	}
 }
 
@@ -468,4 +483,14 @@ void AppViewer::setEditionFlags(bool arg){
 	editingC = arg;
 	editingNAS = arg;
 	editingBS = arg;
+}
+
+void AppViewer::addDemo(){
+	setUpDemos();
+	model.addObject(szaserow);
+	model.addObject(banacha);
+	model.addObject(woloska);
+	model.addObject(pazur);
+	model.addObject(manicureexpress);	
+	model.addObject(piekna);
 }

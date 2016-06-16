@@ -69,6 +69,8 @@ public:
 	//Flags modification
 	void setEditionFlags(bool arg);
 
+	void addDemo();
+
 //Slots
 private slots:
 	void on_pushButtonClose_clicked();
@@ -76,6 +78,7 @@ private slots:
 	void on_pushButtonBrowse_clicked();
 	void on_pushButtonAddStuff_clicked();
 	void on_pushButtonSaveName_clicked();
+	void on_pushButtonDemo_clicked();
 
 	//right panel buttons
 	void on_pushButtonAddClinic_clicked();
@@ -84,7 +87,7 @@ private slots:
 	void on_pushButtonDelete_clicked();
 	//listwidget
 	void on_listWidget_itemClicked();
-
+	
 private:
 	Ui::AppViewerClass ui;
 	AppModel model;

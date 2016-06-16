@@ -29,7 +29,6 @@ QT_BEGIN_NAMESPACE
 class Ui_AppViewerClass
 {
 public:
-    QTextBrowser *textBrowserMyDebug;
     QGraphicsView *graphicsView;
     QListWidget *listWidget;
     QTextBrowser *textBrowserInfo;
@@ -59,15 +58,13 @@ public:
     QPushButton *pushButtonAddBeauty;
     QPushButton *pushButtonDelete;
     QPushButton *pushButtonClose;
+    QPushButton *pushButtonDemo;
 
     void setupUi(QWidget *AppViewerClass)
     {
         if (AppViewerClass->objectName().isEmpty())
             AppViewerClass->setObjectName(QStringLiteral("AppViewerClass"));
         AppViewerClass->resize(869, 670);
-        textBrowserMyDebug = new QTextBrowser(AppViewerClass);
-        textBrowserMyDebug->setObjectName(QStringLiteral("textBrowserMyDebug"));
-        textBrowserMyDebug->setGeometry(QRect(370, 600, 361, 41));
         graphicsView = new QGraphicsView(AppViewerClass);
         graphicsView->setObjectName(QStringLiteral("graphicsView"));
         graphicsView->setGeometry(QRect(10, 10, 351, 201));
@@ -201,6 +198,9 @@ public:
         pushButtonClose = new QPushButton(AppViewerClass);
         pushButtonClose->setObjectName(QStringLiteral("pushButtonClose"));
         pushButtonClose->setGeometry(QRect(740, 600, 121, 41));
+        pushButtonDemo = new QPushButton(AppViewerClass);
+        pushButtonDemo->setObjectName(QStringLiteral("pushButtonDemo"));
+        pushButtonDemo->setGeometry(QRect(370, 600, 361, 41));
 
         retranslateUi(AppViewerClass);
 
@@ -230,6 +230,7 @@ public:
         pushButtonAddBeauty->setText(QApplication::translate("AppViewerClass", "Dodaj Salon Pi\304\231kno\305\233ci", 0));
         pushButtonDelete->setText(QApplication::translate("AppViewerClass", "Usu\305\204", 0));
         pushButtonClose->setText(QApplication::translate("AppViewerClass", "Zako\305\204cz", 0));
+        pushButtonDemo->setText(QApplication::translate("AppViewerClass", "Demo", 0));
     } // retranslateUi
 
 };

@@ -70,3 +70,7 @@ void AppModel::setObjectName(int i, string name){
 Clinic& AppModel::getClinic(){ return this->clinic; }
 BeautyStudio& AppModel::getBeauty(){ return this->beauty; }
 NailArtSaloon& AppModel::getNails(){ return this->nails; }
+
+void AppModel::setHCU(HealthCareUnit &h){
+	*hcu = h;
+}

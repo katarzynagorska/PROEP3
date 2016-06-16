@@ -126,6 +126,7 @@
     <ClInclude Include="appmodel.h" />
     <ClInclude Include="beautystudio.h" />
     <ClInclude Include="clinic.h" />
+    <ClInclude Include="demo.h" />
     <ClInclude Include="GeneratedFiles\ui_appviewer.h" />
     <ClInclude Include="healthcareunit.h" />
     <ClInclude Include="mylist.h" />
@@ -143,6 +144,14 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Images\banacha.jpg" />
+    <Image Include="Resources\Images\emma.jpg" />
+    <Image Include="Resources\Images\nails.jpg" />
+    <Image Include="Resources\Images\pikachunails.jpg" />
+    <Image Include="Resources\Images\szas.jpg" />
+    <Image Include="Resources\Images\woloska.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

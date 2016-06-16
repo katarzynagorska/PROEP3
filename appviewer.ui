@@ -13,16 +13,6 @@
   <property name="windowTitle">
    <string>AppViewer</string>
   </property>
-  <widget class="QTextBrowser" name="textBrowserMyDebug">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>600</y>
-     <width>361</width>
-     <height>41</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QGraphicsView" name="graphicsView">
    <property name="geometry">
     <rect>
@@ -214,6 +204,19 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Zakończ</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonDemo">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>600</y>
+     <width>361</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Demo</string>
    </property>
   </widget>
  </widget>

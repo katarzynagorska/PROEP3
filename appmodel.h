@@ -29,14 +29,15 @@ public:
 	void setObjectName(int i, string name);
 
 	//Getters
-	Clinic& getClinic();// {return this->clinic; }
-	BeautyStudio& getBeauty();// {return this->beauty; }
-	NailArtSaloon& getNails();// {return this->nails; }
+	Clinic& getClinic();
+	BeautyStudio& getBeauty();
+	NailArtSaloon& getNails();
 	HealthCareUnit& getHCU(){ return *hcu; }
+	//Setters
+	void setHCU(HealthCareUnit &h);
+	
 
 	HealthCareUnit* hcu;
-
-
 	myList<HealthCareUnit*> list;
 private:
 
