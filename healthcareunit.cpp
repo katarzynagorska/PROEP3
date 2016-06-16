@@ -48,9 +48,10 @@ void HealthCareUnit::setName(string s)
 	name = s;
 }
 void HealthCareUnit::setImage(string filepath){
-	//TODO setting image
+	image.load(QString::fromStdString(filepath));
 }
 
 void HealthCareUnit::clear(){
 	equipment.erase(equipment.begin(), equipment.end());
+	image = QImage();
 }

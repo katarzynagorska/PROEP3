@@ -32,6 +32,7 @@ public:
 	void refreshTextBrowser(HealthCareUnit &hcu);
 	void refreshListWidget();
 	void refreshImagePath();
+	void displayImage(QImage img);
 
 	//Clearing browers and lineEdits
 	void clearTextBrowserInfo();
@@ -87,6 +88,8 @@ private slots:
 private:
 	Ui::AppViewerClass ui;
 	AppModel model;
+
+	QGraphicsScene *scene;
 
 	bool editingC, editingBS, editingNAS;
 	bool newObjectCreated;

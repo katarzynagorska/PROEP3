@@ -20,6 +20,17 @@ AppViewer::AppViewer(QWidget *parent) : QMainWindow(parent)
 
 	enableEditingPanel(false);
 	ui.lineEditImage->setDisabled(true);
+
+	QImage img("C:/Users/Katarzyna/Pictures/a.png");
+
+
+	
+	scene = new QGraphicsScene(this);
+//	QImage small = img.scaled(ui.graphicsView->size(), Qt::KeepAspectRatio);
+
+
+
+	//QGraphicsView view(scene);
 }
 
 AppViewer::~AppViewer()
@@ -72,6 +83,9 @@ void AppViewer::on_pushButtonAddStuff_clicked(){
 //Getting image filepath
 void AppViewer::on_pushButtonBrowse_clicked(){
 	refreshImagePath();
+	QString filepath = ui.lineEditImage->text();
+	QImage img(filepath);
+	displayImage(img);
 }
 
 //Right panel - list widget representing myLIst of HCU*
@@ -80,6 +94,7 @@ void AppViewer::on_listWidget_itemClicked(){
 	getSelectedItemFromList();	
 	enableEditingFields(getItemType(model.getHCU()));
 	updateSelection(getItemType(model.getHCU()));
+	displayImage(model.getHCU().getImage());
 }
 
 //Right panel buttons
@@ -117,6 +132,7 @@ void AppViewer::on_pushButtonDelete_clicked(){
 void AppViewer::removeSelectedObjectFromModel(){
 	model.list.erase(selectedRow);
 }
+
 void AppViewer::removeSelectedObjectFromListWidget(){
 	QListWidgetItem *toremove = new QListWidgetItem;
 	toremove = ui.listWidget->takeItem(selectedRow);
@@ -164,7 +180,8 @@ void AppViewer::updateListAfterAddingObject(QString newName){
 	//Adding new hcu to listwidget
 	//When new object was created
 	if (newObjectCreated){
-		ui.listWidget->addItem(item);
+		if (!newName.isEmpty())
+			ui.listWidget->addItem(item);
 	}
 	else
 	{
@@ -188,6 +205,14 @@ void AppViewer::setImageInSelectedObject(){
 	if (!filepath.isEmpty()){
 		model.getHCU().setImage(filepath.toStdString());
 	}
+}
+
+void AppViewer::displayImage(QImage img){
+	scene->clear();
+	QImage resized = img.scaled(ui.graphicsView->size(), Qt::KeepAspectRatio);
+	scene->addPixmap(QPixmap::fromImage(resized));
+	scene->setSceneRect(resized.rect());
+	ui.graphicsView->setScene(scene);
 }
 
 void AppViewer::addPatientsToSelectedObject(){
@@ -381,6 +406,8 @@ void AppViewer::clearEditingPanel(){
 	ui.lineEditWorker->setText("");
 	ui.lineEditImage->setText("");
 	ui.lineEditName->setText("");
+	scene->clear();
+	//ui.graphicsView->setScene(scene);
 }
 
 //Error MssgBoxes and stuff
