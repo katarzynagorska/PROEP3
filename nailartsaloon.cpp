@@ -23,10 +23,10 @@ string NailArtSaloon::infoToStr(){
 	s += "\n";
 	s += equipToStr();
 
-	s += "\n\n";
+	s += "\n";
 	s += beauticiansToStr();
 
-	s += "\n\n";
+	s += "\n";
 	s += servicesToStr();
 
 
@@ -48,7 +48,7 @@ string NailArtSaloon::servicesToStr(){
 		it++;
 	}
 
-	ss << endl << "Srednia cena za zabieg wynosi: " << price << endl;
+	ss << endl << "Srednia cena za zabieg wynosi: " << price;
 
 	s = ss.str();
 	return s;

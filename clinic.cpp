@@ -23,20 +23,18 @@ Clinic::~Clinic()
 
 string Clinic::patientsToStr(){
 	stringstream ss;
-	ss << endl << "PACJENCI: " << endl;
+	ss << "PACJENCI: " << endl;
 	for (int i = 0; i < int(patients.size()); i++)
-		ss << patients[i] << endl;
+		ss << i+1 << ". "<< patients[i] << endl;
 
 	return ss.str();
 }
 string Clinic::infoToStr(){
 	stringstream ss;
 	ss << "----Przychodnia----" << endl;
-	ss << name << endl;
-
+	ss << name << endl ;
 	ss << equipToStr() << endl;
-
-	ss << patientsToStr() << endl << endl;
+	ss << patientsToStr();
 
 
 	return ss.str();

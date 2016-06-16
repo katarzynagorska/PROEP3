@@ -22,7 +22,7 @@ string BeautyStudio::infoToStr(){
 	s += "Cena zabiegu: " + to_string(price);
 	s += "\n\n";
 	s += equipToStr();
-	s += "\n\n";
+	s += "\n";
 	s += beauticiansToStr();
 
 	return s;

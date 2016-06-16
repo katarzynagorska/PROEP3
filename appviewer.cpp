@@ -69,6 +69,7 @@ void AppViewer::on_pushButtonAddStuff_clicked(){
 	clearEditingPanel();
 	enableEditingPanel(false);
 	refreshTextBrowser(model.getHCU());
+	displayImage(model.getHCU().getImage());
 	setEditionFlags(false);
 }
 
@@ -91,6 +92,7 @@ void AppViewer::on_listWidget_itemClicked(){
 
 //Right panel buttons
 void AppViewer::on_pushButtonAddClinic_clicked(){
+	clearTextBrowserInfo();
 	clearEditingPanel();
 	setEditionFlags(false);
 	editingC = true;
@@ -98,8 +100,10 @@ void AppViewer::on_pushButtonAddClinic_clicked(){
 	newObjectCreated = true;
 	enableSavingName(true);
 	enableAddingStuff(false);
+	selectedRow = model.list.size();
 }
 void AppViewer::on_pushButtonAddNails_clicked(){
+	clearTextBrowserInfo();
 	clearEditingPanel();
 	setEditionFlags(false);
 	editingNAS = true;
@@ -107,9 +111,11 @@ void AppViewer::on_pushButtonAddNails_clicked(){
 	newObjectCreated = true;
 	enableSavingName(true);
 	enableAddingStuff(false);
+	selectedRow = model.list.size();
 }
 
 void AppViewer::on_pushButtonAddBeauty_clicked(){
+	clearTextBrowserInfo();
 	clearEditingPanel();
 	setEditionFlags(false);
 	editingBS = true;
@@ -117,6 +123,7 @@ void AppViewer::on_pushButtonAddBeauty_clicked(){
 	newObjectCreated = true;
 	enableSavingName(true);
 	enableAddingStuff(false);
+	selectedRow = model.list.size();
 }
 void AppViewer::on_pushButtonClose_clicked(){
 	this->close();
@@ -133,6 +140,7 @@ void AppViewer::on_pushButtonDelete_clicked(){
 	removeSelectedObjectFromListWidget();
 	removeSelectedObjectFromModel();
 	clearTextBrowserInfo();
+	clearEditingPanel();
 }
 
 void AppViewer::removeSelectedObjectFromModel(){
@@ -322,7 +330,7 @@ void AppViewer::refreshImagePath(){
 }
 
 void AppViewer::refreshTextBrowser(HealthCareUnit &hcu){
-	ui.textBrowserInfo->setText(QString::fromStdString(hcu.infoToStr()));
+	ui.textBrowserInfo->setText(QString::fromStdString(hcu.infoToStr()+"\n\nCzas utworzenia wezla od uruchomienia programu w ms: " +to_string(model.list.nodeCreationTime(selectedRow))));
 }
 
 void AppViewer::getSelectedItemFromList(){
